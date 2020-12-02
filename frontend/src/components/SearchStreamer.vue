@@ -16,6 +16,11 @@
 
 <script>
 import axios from 'axios'
+import Vue from 'vue'
+import Loading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.css';
+
+Vue.use(Loading)
 
 export default {
   name: 'SearchStreamer',
@@ -28,11 +33,25 @@ export default {
   },
   methods: {
     getChannelData: function() {
+      if(this.searchTerm.length === 0) {
+        return
+      }
+
+      let loader = this.$loading.show({
+        color: '#3ccf91',
+        opacity: .1,
+        backgroundColor: '#12141d' 
+      })
+
       const url = `http://localhost:3001/api/channel/${this.searchTerm}`
       axios.get(url)
         .then(response => {
           this.displayName = response.data.displayName
           this.totalFollowers = response.data.totalFollowers
+          loader.hide()
+        })
+        .catch(error => {
+          console.log(error)
         })
     }
   }
