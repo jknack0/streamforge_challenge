@@ -1,9 +1,12 @@
 const express = require('express')
 const app = express()
-const streamerRouter = require('./controllers/streamer')
+const middleware = require('./utils/middleware')
+const channelRouter = require('./controllers/channel')
 
 app.use(express.json())
 
-app.user('/api/streamer', streamerRouter)
+app.use('/api/streamer', channelRouter)
+
+app.use(middleware.unknownEndpoint)
 
 module.exports = app
