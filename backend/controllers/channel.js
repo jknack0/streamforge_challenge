@@ -4,19 +4,25 @@ const config = require('../utils/config')
 const getToken = require('../utils/getToken')
 
 channelRouter.get('/:name', async (request, response) => {
-  const authToken = await getToken()
-  const name = request.params.name
-  const channelUrl = `https://api.twitch.tv/helix/search/channels?query=${name}`
+  try {
+    const authToken = await getToken()
+    const name = request.params.name
+    
+    const followerUrl = `https://api.twitch.tv/helix/users/follows?to_id=${channel.id}`
 
-  const channelResponse = await axios.get(channelUrl, {
-    headers: {
-      'client-id': config.CLIENT_ID,
-      'authorization': 'Bearer ' + authToken
-    }
-  })
-  
+    const followerResponse = await axios.get(followerUrl, {
+      headers: {
+        'client-id': config.CLIENT_ID,
+        'authorization': 'Bearer ' + authToken
+      }
+    })
 
-  response.json(channelResponse.data)
+    const totalFollowers = followerResponse.data.total
+
+    response.json({'displayName': channel.display_name, totalFollowers})
+  } catch (error) {
+    response.json(error)
+  } 
 })
 
 module.exports = channelRouter
