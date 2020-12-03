@@ -8,7 +8,7 @@ const db = new sqlite3.Database(DBSOURCE, (error) => {
     throw error
   } else {
     console.log('Connected to database')
-    db.run(`CREATE TABLE channel (
+    db.run(`CREATE TABLE IF NOT EXISTS channel (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       display_name text,
       game_id text,
@@ -16,7 +16,9 @@ const db = new sqlite3.Database(DBSOURCE, (error) => {
       followers integer
     )`),
     (error) => {
-      console.log('Table already exists')
+      if(error) {
+        console.log(error.message)
+      }
     }
   }
 })

@@ -1,5 +1,13 @@
 const axios = require('axios').default
 const config = require('./config')
+const db = require('../db')
+
+const saveChannel = async (channel, followers) => {
+  const insert = `INSERT INTO channel (display_name, game_id, streamer_id, followers) values (?, ?, ?, ?)`
+  const { display_name, game_id, id } = channel
+
+  db.run(insert, [display_name, game_id, id, followers])
+}
 
 const getToken = async () => {
   const tokenUrl = `https://id.twitch.tv/oauth2/token?client_id=${config.CLIENT_ID}&client_secret=${config.CLIENT_SECRET}&grant_type=client_credentials`
@@ -42,5 +50,6 @@ const getFollowers = async (id, authToken) => {
 module.exports = {
   getToken,
   getChannel,
-  getFollowers
+  getFollowers,
+  saveChannel
 }
